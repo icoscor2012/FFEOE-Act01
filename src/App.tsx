@@ -1,122 +1,90 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { z } from 'zod';
+import { useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+const schema = z.object({
+  nombre: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
+  email: z.email(),
+  curso: z.enum(["1 DAM", "2 DAM"]),
+})
+
+export default function App() {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    curso: '',
+  })
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        {/* Cabecera */}
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">Sistema de gestión</p>
+          <h1 className="text-4xl font-bold text-white">Formulario de inscripción</h1>
+          <div className="mt-3 h-px bg-linear-to-r from-blue-500 to-transparent"></div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        {/* Tarjeta del formulario */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              const result = schema.safeParse(formData)
+              if (result.success) {
+                alert("Datos válidos guardados con éxito:\n" + JSON.stringify(result.data, null, 2))
+              } else {
+                alert("Error: " + result.error.issues[0].message)
+              }
+            }}
+            className="flex flex-col gap-5"
+          >
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs uppercase tracking-widest text-zinc-400">Nombre</label>
+              <input
+                type="text"
+                value={formData.nombre}
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                placeholder="Ej: Juan García"
+                className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs uppercase tracking-widest text-zinc-400">Email</label>
+              <input
+                type="text"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="Ej: juan@correo.com"
+                className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs uppercase tracking-widest text-zinc-400">Curso</label>
+              <input
+                type="text"
+                value={formData.curso}
+                onChange={(e) => setFormData({ ...formData, curso: e.target.value })}
+                placeholder="1 DAM o 2 DAM"
+                className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="mt-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg transition-colors cursor-pointer"
+            >
+              Validar y guardar
+            </button>
+
+          </form>
+        </div>
+
+        <p className="text-center text-zinc-600 text-xs mt-6">Validación con Zod · React + TypeScript</p>
+      </div>
+    </div>
   )
 }
-
-export default App
