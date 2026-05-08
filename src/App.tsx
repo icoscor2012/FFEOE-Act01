@@ -68,7 +68,7 @@ export default function App() {
                 type="text"
                 value={formData.curso}
                 onChange={(e) => setFormData({ ...formData, curso: e.target.value })}
-                placeholder="1 DAM o 2 DAM"
+                placeholder="1 DAM ó 2 DAM"
                 className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
               />
             </div>
